@@ -1,22 +1,22 @@
 clear
 load('data.mat')
 
-poola = linspace(0,3,31);
-poolb = linspace(0,1.5,16);
-poolc = linspace(0,1.5,16);
+poola = linspace(0,0.1,11);
+poolb = linspace(0,0.2,21);
+poolc = linspace(0,0.1,11);
 L = {poola,poolb,poolc};
 n = length(L);
 [L{:}] = ndgrid(L{end:-1:1});
 L = cat(n+1,L{:});
 L = fliplr(reshape(L,[],n));
-% tout = [];
-% yout = [];
-result = [];
+sizeL = size(L);
+rowsL = sizeL(1);
+result = zeros(rowsL,1);
 global a;
 global b;
 global c;
 global targetHeight;
-for j = 1:length(L)
+for j = 1:rowsL
 j
 a = L(j,1);
 b = L(j,2);
@@ -56,10 +56,10 @@ xy_diff = sqrt((x_target - ye(1))^2 + (y_target - ye(2))^2);
 obj = t_diff + xy_diff;
 total_obj = total_obj + obj;
 end
-result = [result; obj];
-% tout = [tout; t'];
-% yout = [yout; y'];
+result(j) = total_obj;
 end
+L(:,4) = result;
+S = sortrows(L,4);
 % --------------------------------------------------------------------------
 
 function dydt = f(t,y)
