@@ -22,7 +22,7 @@ a = L(j,1);
 b = L(j,2);
 c = L(j,3);
 total_obj = 0;
-for i = 1:5
+for i = 2:5
 t_real = cell2mat(data(i,1));
 x = cell2mat(data(i,2));
 y = cell2mat(data(i,3));
@@ -53,7 +53,7 @@ y0 = [px0;py0;pz0;vx0;vy0;vz0];
 % Accumulate output
 t_diff = abs(t_target - te);
 xy_diff = sqrt((x_target - ye(1))^2 + (y_target - ye(2))^2);
-obj = t_diff + xy_diff;
+obj = t_diff + 100 * xy_diff;
 total_obj = total_obj + obj;
 end
 result(j) = total_obj;

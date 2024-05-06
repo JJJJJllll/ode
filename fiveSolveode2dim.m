@@ -1,4 +1,5 @@
 clear
+close all
 load('data.mat')
 
 poola = linspace(0,3,31);
@@ -9,20 +10,22 @@ n = length(L);
 [L{:}] = ndgrid(L{end:-1:1});
 L = cat(n+1,L{:});
 L = fliplr(reshape(L,[],n));
-% tout = [];
-% yout = [];
 result = [];
+error(1,:) = {'time error (sec)','xy error (cm)'};
 global a;
 global b;
 global c;
 global targetHeight;
 % for j = 1:length(L)
-j = 273;
-a = L(j,1);
-b = L(j,2);
-c = L(j,3);
+% j = 273;
+% a = L(j,1);
+% b = L(j,2);
+% c = L(j,3);
+a = 0.04;
+b = 0.00;
+c = 0.1;
 total_obj = 0;
-for i = 1:5
+for i = 2:5
 t_real = cell2mat(data(i,1));
 x = cell2mat(data(i,2));
 y = cell2mat(data(i,3));
@@ -46,7 +49,7 @@ options = odeset('Events',@events,'OutputFcn',@odeplot,'OutputSel',[3],...
 % options = odeset('Events',@events,'Refine',4);
 y0 = [px0;py0;pz0;vx0;vy0;vz0];
 % Solve until the first terminal event.
-figure
+subplot(1,4,i-1)
 [t,y,te,ye,ie] = ode45(@f,[0 10],y0,options);
 hold on
 plot(t_real,z)
@@ -56,10 +59,10 @@ t_diff = abs(t_target - te);
 xy_diff = sqrt((x_target - ye(1))^2 + (y_target - ye(2))^2);
 obj = t_diff + xy_diff;
 total_obj = total_obj + obj;
+error(i,:) = {t_diff, xy_diff * 100};
+subtitle({sprintf('time error: %.2f sec',t_diff),sprintf('xy error: %.2f cm',xy_diff * 100)})
 end
-result = [result; obj];
-% tout = [tout; t'];
-% yout = [yout; y'];
+result = [result; total_obj];
 % end
 % --------------------------------------------------------------------------
 
